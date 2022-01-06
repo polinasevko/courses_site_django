@@ -7,7 +7,7 @@ from .views import (
     LectureView,
     HometaskView,
     HomeworkView,
-    MarkView
+    CommentView
 )
 
 course_router = SimpleRouter()
@@ -18,8 +18,9 @@ hometask_router = NestedSimpleRouter(lecture_router, r'lecture', lookup='lecture
 hometask_router.register(r'hometask', HometaskView, basename='hometask')
 homework_router = NestedSimpleRouter(hometask_router, r'hometask', lookup='hometask')
 homework_router.register(r'homework', HomeworkView, basename='homework')
-mark_router = NestedSimpleRouter(homework_router, r'homework', lookup='homework')
-mark_router.register(r'mark', MarkView, basename='mark')
+comment_router = NestedSimpleRouter(homework_router, r'homework', lookup='homework')
+comment_router.register(r'comment', CommentView, basename='comment')
+
 
 urlpatterns = [
     path('<int:pk>/teachers/', AddTeacherView.as_view(), name='add-teacher'),
@@ -28,5 +29,5 @@ urlpatterns = [
     path('', include(lecture_router.urls)),
     path('', include(hometask_router.urls)),
     path('', include(homework_router.urls)),
-    path('', include(mark_router.urls)),
+    path('', include(comment_router.urls)),
 ]

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Course, Lecture, Hometask, Homework, Mark
+from .models import Course, Lecture, Hometask, Homework, Comment
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -89,7 +89,7 @@ class HometaskSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         lecture_id = self.context['view'].kwargs['lecture_pk']
-        validated_data['lecture'] = Hometask.objects.get(id=lecture_id)
+        validated_data['lecture'] = Lecture.objects.get(id=lecture_id)
         instance = super().create(validated_data)
         return instance
 
@@ -97,6 +97,19 @@ class HometaskSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         validated_data.pop('lecture', None)
         return super().update(instance, validated_data)
+
+#
+# class MarkSerializer(serializers.ModelSerializer):
+#     homework = serializers.StringRelatedField()
+#
+#     class Meta:
+#         model = Mark
+#         fields = '__all__'
+
+    # prevent homework field from being updated
+    # def update(self, instance, validated_data):
+    #     validated_data.pop('homework', None)
+    #     return super().update(instance, validated_data)
 
 
 class HomeworkSerializer(serializers.ModelSerializer):
@@ -107,6 +120,7 @@ class HomeworkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Homework
         fields = '__all__'
+        read_only_fields = ['mark']
 
     def create(self, validated_data):
         hometask_id = self.context['view'].kwargs['hometask_pk']
@@ -123,19 +137,34 @@ class HomeworkSerializer(serializers.ModelSerializer):
 
 
 class MarkSerializer(serializers.ModelSerializer):
-    homework = serializers.StringRelatedField()
 
     class Meta:
-        model = Mark
+        model = Homework
+        fields = ('mark',)
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    homework = serializers.StringRelatedField()
+    owner = serializers.StringRelatedField()
+
+    class Meta:
+        model = Comment
         fields = '__all__'
 
     def create(self, validated_data):
+        user = self.context['request'].user
         homework_id = self.context['view'].kwargs['homework_pk']
+        homework_obj = Homework.objects.get(id=homework_id)
+        if not homework_obj.mark:
+            raise Exception("Mark is null. You can leave comments only on the mark.") ############
+        validated_data['owner'] = user
         validated_data['homework'] = Homework.objects.get(id=homework_id)
         instance = super().create(validated_data)
         return instance
 
-    # prevent homework field from being updated
-    def update(self, instance, validated_data):
-        validated_data.pop('homework', None)
-        return super().update(instance, validated_data)
+    # prevent homework/owner field from being updated
+    # def update(self, instance, validated_data):
+    #     validated_data.pop('homework', None)
+    #     validated_data.pop('owner', None)
+    #     return super().update(instance, validated_data)
+
