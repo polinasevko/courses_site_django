@@ -1,12 +1,22 @@
-from rest_framework import status, generics, viewsets
-from rest_framework.response import Response
+from django.db.models import F
+from rest_framework import generics
+from rest_framework import status
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
-from .models import Course, Lecture, Hometask, Homework, Comment
+from rest_framework.response import Response
+
+from .models import (
+    Course,
+    Lecture,
+    Hometask,
+    Homework,
+    Comment
+)
 from .permissions import (
     TeacherPermissions,
     StudentPermissions,
-    CommentPermission,
+    IsOwnerOfComment
 )
 from .serializers import (
     CourseSerializer,
@@ -22,7 +32,6 @@ from .serializers import (
 
 class CourseView(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
-    # permission_classes = [IsAuthenticated, CoursePermission]
 
     def get_queryset(self):
         teacher_courses = self.request.user.as_teacher.all()
@@ -31,9 +40,9 @@ class CourseView(viewsets.ModelViewSet):
         return queryset.distinct()
 
     def get_permissions(self):
-        if self.action == 'create':
+        if self.action in ['create', 'list']:
             self.permission_classes = [IsAuthenticated]
-        elif self.action in ['list', 'retrieve']:
+        elif self.action == 'retrieve':
             self.permission_classes = [TeacherPermissions | StudentPermissions]
         else:
             self.permission_classes = [TeacherPermissions]
@@ -68,7 +77,6 @@ class AddDeleteStudentView(generics.RetrieveUpdateDestroyAPIView):
 
 class LectureView(viewsets.ModelViewSet):
     serializer_class = LectureSerializer
-    # permission_classes = [IsAuthenticated, CourseMembershipPermission]
 
     def get_queryset(self):
         return Lecture.objects.filter(course=self.kwargs['course_pk'])
@@ -83,7 +91,6 @@ class LectureView(viewsets.ModelViewSet):
 
 class HometaskView(viewsets.ModelViewSet):
     serializer_class = HometaskSerializer
-    # permission_classes = [IsAuthenticated, CourseMembershipPermission]
 
     def get_queryset(self):
         return Hometask.objects.filter(lecture=self.kwargs['lecture_pk'])
@@ -105,7 +112,8 @@ class HomeworkView(viewsets.ModelViewSet):
         user = self.request.user
         if user.as_student.filter(id=course_id).exists():
             return Homework.objects.filter(hometask=self.kwargs['hometask_pk'], student=user)
-        return Homework.objects.filter(hometask=self.kwargs['hometask_pk'])
+        return Homework.objects.filter(hometask=self.kwargs['hometask_pk'])\
+            .order_by(F('created').desc(nulls_first=True))
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
@@ -127,7 +135,13 @@ class HomeworkView(viewsets.ModelViewSet):
 
 class CommentView(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [CommentPermission]
 
     def get_queryset(self):
         return Comment.objects.filter(homework=self.kwargs['homework_pk'])
+
+    def get_permissions(self):
+        if self.action in ['create', 'list', 'retrieve']:
+            self.permission_classes = [TeacherPermissions | StudentPermissions]
+        else:
+            self.permission_classes = [IsOwnerOfComment]
+        return super().get_permissions()

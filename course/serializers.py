@@ -1,5 +1,12 @@
 from rest_framework import serializers
-from .models import Course, Lecture, Hometask, Homework, Comment
+
+from .models import (
+    Course,
+    Lecture,
+    Hometask,
+    Homework,
+    Comment
+)
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -98,22 +105,8 @@ class HometaskSerializer(serializers.ModelSerializer):
         validated_data.pop('lecture', None)
         return super().update(instance, validated_data)
 
-#
-# class MarkSerializer(serializers.ModelSerializer):
-#     homework = serializers.StringRelatedField()
-#
-#     class Meta:
-#         model = Mark
-#         fields = '__all__'
-
-    # prevent homework field from being updated
-    # def update(self, instance, validated_data):
-    #     validated_data.pop('homework', None)
-    #     return super().update(instance, validated_data)
-
 
 class HomeworkSerializer(serializers.ModelSerializer):
-    # student = serializers.HiddenField(default=serializers.CurrentUserDefault())
     hometask = serializers.StringRelatedField()
     student = serializers.StringRelatedField()
 
@@ -142,6 +135,11 @@ class MarkSerializer(serializers.ModelSerializer):
         model = Homework
         fields = ('mark',)
 
+    def validate(self, attrs):
+        if attrs['mark'] > self.instance.hometask.max_mark:
+            raise serializers.ValidationError({"mark": "Mark cannot be more than Maximum mark for task."})
+        return attrs
+
 
 class CommentSerializer(serializers.ModelSerializer):
     homework = serializers.StringRelatedField()
@@ -156,15 +154,16 @@ class CommentSerializer(serializers.ModelSerializer):
         homework_id = self.context['view'].kwargs['homework_pk']
         homework_obj = Homework.objects.get(id=homework_id)
         if not homework_obj.mark:
-            raise Exception("Mark is null. You can leave comments only on the mark.") ############
+            raise Exception("Mark is null. You can leave comments only on the mark.")
+
         validated_data['owner'] = user
-        validated_data['homework'] = Homework.objects.get(id=homework_id)
+        validated_data['homework'] = homework_obj
         instance = super().create(validated_data)
         return instance
 
     # prevent homework/owner field from being updated
-    # def update(self, instance, validated_data):
-    #     validated_data.pop('homework', None)
-    #     validated_data.pop('owner', None)
-    #     return super().update(instance, validated_data)
+    def update(self, instance, validated_data):
+        validated_data.pop('homework', None)
+        validated_data.pop('owner', None)
+        return super().update(instance, validated_data)
 

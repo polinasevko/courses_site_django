@@ -1,5 +1,7 @@
 from django.urls import path, include
+
 from rest_framework_nested.routers import SimpleRouter, NestedSimpleRouter
+
 from .views import (
     CourseView,
     AddTeacherView,
@@ -9,6 +11,7 @@ from .views import (
     HomeworkView,
     CommentView
 )
+
 
 course_router = SimpleRouter()
 course_router.register(r'', CourseView, basename='course')
