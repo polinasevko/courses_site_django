@@ -46,6 +46,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({"password": "Password fields don't match."})
+        return attrs
 
     def validate_old_password(self, value):
         user = self.context['request'].user
