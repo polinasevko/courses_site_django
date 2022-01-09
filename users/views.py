@@ -1,34 +1,41 @@
-from .serializers import RegisterSerializer, ChangePasswordSerializer, UpdateUserSerializer
-from .permissions import IsOwner
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework import generics
 from django.contrib.auth.models import User
-from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.response import Response
+
+from rest_framework import generics
 from rest_framework import status
+from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import APIView
+
+from .serializers import (
+    RegisterSerializer,
+    ChangePasswordSerializer,
+    UpdateUserSerializer
+)
+from .permissions import IsOwner
 
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
-    permission_classes = (AllowAny,)
+    permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
 
 
 class ChangePasswordView(generics.UpdateAPIView):
     queryset = User.objects.all()
-    permission_classes = (IsAuthenticated, IsOwner)
+    permission_classes = [IsAuthenticated, IsOwner]
     serializer_class = ChangePasswordSerializer
 
 
 class UpdateProfileView(generics.UpdateAPIView):
     queryset = User.objects.all()
-    permission_classes = (IsAuthenticated, IsOwner)
+    permission_classes = [IsAuthenticated, IsOwner]
     serializer_class = UpdateUserSerializer
 
 
 class LogoutView(APIView):
-    permission_classes = (IsAuthenticated, IsOwner)
+    permission_classes = [IsAuthenticated, IsOwner]
 
     def post(self, request):
         try:

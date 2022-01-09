@@ -10,8 +10,8 @@ from .models import (
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    teachers = serializers.StringRelatedField(many=True)
-    students = serializers.StringRelatedField(many=True)
+    teachers = serializers.StringRelatedField(many=True, required=False)
+    students = serializers.StringRelatedField(many=True, required=False)
 
     class Meta:
         model = Course
