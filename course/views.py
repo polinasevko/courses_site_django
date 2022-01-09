@@ -43,15 +43,15 @@ class CourseView(viewsets.ModelViewSet):
         if self.action in ['create', 'list']:
             self.permission_classes = [IsAuthenticated]
         elif self.action == 'retrieve':
-            self.permission_classes = [TeacherPermissions | StudentPermissions]
+            self.permission_classes = [IsAuthenticated, TeacherPermissions | StudentPermissions]
         else:
-            self.permission_classes = [TeacherPermissions]
+            self.permission_classes = [IsAuthenticated, TeacherPermissions]
         return super().get_permissions()
 
 
 class AddTeacherView(generics.RetrieveUpdateAPIView):
     serializer_class = AddTeacherSerializer
-    permission_classes = [TeacherPermissions]
+    permission_classes = [IsAuthenticated, TeacherPermissions]
 
     def get_queryset(self):
         return Course.objects.filter(id=self.kwargs['pk'])
@@ -59,7 +59,7 @@ class AddTeacherView(generics.RetrieveUpdateAPIView):
 
 class AddDeleteStudentView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AddDeleteStudentSerializer
-    permission_classes = [TeacherPermissions]
+    permission_classes = [IsAuthenticated, TeacherPermissions]
 
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -83,9 +83,9 @@ class LectureView(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
-            self.permission_classes = [TeacherPermissions | StudentPermissions]
+            self.permission_classes = [IsAuthenticated, TeacherPermissions | StudentPermissions]
         else:
-            self.permission_classes = [TeacherPermissions]
+            self.permission_classes = [IsAuthenticated, TeacherPermissions]
         return super().get_permissions()
 
 
@@ -97,15 +97,14 @@ class HometaskView(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
-            self.permission_classes = [TeacherPermissions | StudentPermissions]
+            self.permission_classes = [IsAuthenticated, TeacherPermissions | StudentPermissions]
         else:
-            self.permission_classes = [TeacherPermissions]
+            self.permission_classes = [IsAuthenticated, TeacherPermissions]
         return super().get_permissions()
 
 
 class HomeworkView(viewsets.ModelViewSet):
     serializer_class = HomeworkSerializer
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         course_id = self.kwargs['course_pk']
@@ -117,20 +116,16 @@ class HomeworkView(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
-            self.permission_classes = [TeacherPermissions | StudentPermissions]
-        elif self.action in ['mark', 'get_mark']:
-            self.permission_classes = [TeacherPermissions]
+            self.permission_classes = [IsAuthenticated, TeacherPermissions | StudentPermissions]
+        elif self.action == 'mark':
+            self.permission_classes = [IsAuthenticated, TeacherPermissions]
         else:
-            self.permission_classes = [StudentPermissions]
+            self.permission_classes = [IsAuthenticated, StudentPermissions]
         return super().get_permissions()
 
     @action(detail=True, methods=['put', 'patch'], serializer_class=MarkSerializer)
     def mark(self, request, pk, **kwargs):
         return super().update(request, pk, **kwargs)
-
-    @mark.mapping.get
-    def get_mark(self, request, **kwargs):
-        return super().retrieve(request, **kwargs)
 
 
 class CommentView(viewsets.ModelViewSet):
@@ -141,7 +136,7 @@ class CommentView(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['create', 'list', 'retrieve']:
-            self.permission_classes = [TeacherPermissions | StudentPermissions]
+            self.permission_classes = [IsAuthenticated, TeacherPermissions | StudentPermissions]
         else:
-            self.permission_classes = [IsOwnerOfComment]
+            self.permission_classes = [IsAuthenticated, IsOwnerOfComment]
         return super().get_permissions()
