@@ -1,0 +1,62 @@
+[
+{
+    "model": "course.hometask",
+    "pk": 1,
+    "fields": {
+        "text": "Hometask for 1 lecture in course 1",
+        "max_mark": 10,
+        "lecture": 1,
+        "created": "2022-01-08T15:04:23.044Z"
+    }
+},
+{
+    "model": "course.hometask",
+    "pk": 2,
+    "fields": {
+        "text": "Hometask for lecture 1 in course 1",
+        "max_mark": 100,
+        "lecture": 1,
+        "created": "2022-01-08T15:04:44.811Z"
+    }
+},
+{
+    "model": "course.hometask",
+    "pk": 3,
+    "fields": {
+        "text": "Hometask for lecture 2 course 1",
+        "max_mark": 10,
+        "lecture": 2,
+        "created": "2022-01-08T15:05:10.791Z"
+    }
+},
+{
+    "model": "course.hometask",
+    "pk": 4,
+    "fields": {
+        "text": "Hometask for lecture a course a",
+        "max_mark": 10,
+        "lecture": 3,
+        "created": "2022-01-08T15:05:24.769Z"
+    }
+},
+{
+    "model": "course.hometask",
+    "pk": 5,
+    "fields": {
+        "text": "Hometask 2 for lecture a in course a",
+        "max_mark": 10,
+        "lecture": 3,
+        "created": "2022-01-08T15:05:44.383Z"
+    }
+},
+{
+    "model": "course.hometask",
+    "pk": 6,
+    "fields": {
+        "text": "Hometask for lecture b course a",
+        "max_mark": 10,
+        "lecture": 4,
+        "created": "2022-01-08T15:05:57.267Z"
+    }
+}
+]

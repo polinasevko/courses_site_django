@@ -1,0 +1,35 @@
+[
+{
+    "model": "course.homework",
+    "pk": 1,
+    "fields": {
+        "file": "shannon-tremaine-NRz7SfpnqUM-unsplash_SKNGyD2.jpg",
+        "created": "2022-01-08T15:00:55.042Z",
+        "mark": 6,
+        "hometask": 1,
+        "student": 1
+    }
+},
+{
+    "model": "course.homework",
+    "pk": 2,
+    "fields": {
+        "file": "hannah-montez-05KFkDsxDjk-unsplash.jpg",
+        "created": "2022-01-08T15:00:46.437Z",
+        "mark": 9,
+        "hometask": 1,
+        "student": 3
+    }
+},
+{
+    "model": "course.homework",
+    "pk": 3,
+    "fields": {
+        "file": "homework.txt",
+        "created": "2022-01-08T15:07:16.683Z",
+        "mark": null,
+        "hometask": 2,
+        "student": 1
+    }
+}
+]

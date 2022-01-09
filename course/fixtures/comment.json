@@ -1,0 +1,32 @@
+[
+{
+    "model": "course.comment",
+    "pk": 1,
+    "fields": {
+        "text": "ыыыыыыыыыыыыыыыыыыыыыыыыы",
+        "created": "2022-01-06T11:53:23.423Z",
+        "homework": 1,
+        "owner": 1
+    }
+},
+{
+    "model": "course.comment",
+    "pk": 2,
+    "fields": {
+        "text": "aaaaaaaaaaaaaaaaaaaaaa",
+        "created": "2022-01-05T19:36:27.060Z",
+        "homework": 1,
+        "owner": 2
+    }
+},
+{
+    "model": "course.comment",
+    "pk": 5,
+    "fields": {
+        "text": "rrrrrrrrrrrrrr",
+        "created": "2022-01-08T15:10:09.960Z",
+        "homework": 1,
+        "owner": 2
+    }
+}
+]
