@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
+from .task import send_email
+
 from .serializers import (
     RegisterSerializer,
     ChangePasswordSerializer,
@@ -20,6 +22,16 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        try:
+            response = super(RegisterView, self).post(request, *args, **kwargs)
+        except Exception as e:
+            print(e)
+        else:
+            send_email.delay(response.data.get('email'))
+        finally:
+            return response
 
 
 class ChangePasswordView(generics.UpdateAPIView):
