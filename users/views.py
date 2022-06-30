@@ -28,9 +28,9 @@ class RegisterView(generics.CreateAPIView):
             response = super(RegisterView, self).post(request, *args, **kwargs)
         except Exception as e:
             print(e)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             send_email.delay(response.data.get('email'))
-        finally:
             return response
 
 
