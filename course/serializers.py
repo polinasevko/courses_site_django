@@ -1,12 +1,6 @@
 from rest_framework import serializers
 
-from .models import (
-    Course,
-    Lecture,
-    Hometask,
-    Homework,
-    Comment
-)
+from .models import Comment, Course, Hometask, Homework, Lecture
 
 
 class CourseSerializer(serializers.ModelSerializer):

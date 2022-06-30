@@ -1,33 +1,16 @@
 from django.db.models import F
-from rest_framework import generics
-from rest_framework import status
-from rest_framework import viewsets
+from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import (
-    Course,
-    Lecture,
-    Hometask,
-    Homework,
-    Comment
-)
-from .permissions import (
-    TeacherPermissions,
-    StudentPermissions,
-    IsOwnerOfComment
-)
-from .serializers import (
-    CourseSerializer,
-    AddTeacherSerializer,
-    AddDeleteStudentSerializer,
-    LectureSerializer,
-    HometaskSerializer,
-    HomeworkSerializer,
-    MarkSerializer,
-    CommentSerializer
-)
+from .models import Comment, Course, Hometask, Homework, Lecture
+from .permissions import (IsOwnerOfComment, StudentPermissions,
+                          TeacherPermissions)
+from .serializers import (AddDeleteStudentSerializer, AddTeacherSerializer,
+                          CommentSerializer, CourseSerializer,
+                          HometaskSerializer, HomeworkSerializer,
+                          LectureSerializer, MarkSerializer)
 
 
 class CourseView(viewsets.ModelViewSet):

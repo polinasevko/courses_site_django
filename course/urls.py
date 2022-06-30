@@ -1,17 +1,8 @@
-from django.urls import path, include
+from django.urls import include, path
+from rest_framework_nested.routers import NestedSimpleRouter, SimpleRouter
 
-from rest_framework_nested.routers import SimpleRouter, NestedSimpleRouter
-
-from .views import (
-    CourseView,
-    AddTeacherView,
-    AddDeleteStudentView,
-    LectureView,
-    HometaskView,
-    HomeworkView,
-    CommentView
-)
-
+from .views import (AddDeleteStudentView, AddTeacherView, CommentView,
+                    CourseView, HometaskView, HomeworkView, LectureView)
 
 course_router = SimpleRouter()
 course_router.register(r'', CourseView, basename='course')

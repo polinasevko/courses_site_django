@@ -1,10 +1,10 @@
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth.models import User
-from rest_framework.test import APIClient
 import pytest
+from django.contrib.auth.models import User
+from model_bakery import baker
+from rest_framework.test import APIClient
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from course.models import Course
-from model_bakery import baker
 
 
 @pytest.fixture

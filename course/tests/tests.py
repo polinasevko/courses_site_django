@@ -1,7 +1,8 @@
-from django.contrib.auth.models import User
-from rest_framework import status
-from django.urls import reverse
 import pytest
+from django.contrib.auth.models import User
+from django.urls import reverse
+from rest_framework import status
+
 from course.models import Course
 
 
