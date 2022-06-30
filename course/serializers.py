@@ -160,4 +160,3 @@ class CommentSerializer(serializers.ModelSerializer):
         validated_data.pop('homework', None)
         validated_data.pop('owner', None)
         return super().update(instance, validated_data)
-
